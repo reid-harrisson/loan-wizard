@@ -12,9 +12,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useNavigate } from "react-router-dom";
 
-// Define the validation schema using Zod
+// Define the validation schema using Zods
 const contactDetailsSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email format"),
   phone: z
@@ -29,8 +28,7 @@ const contactDetailsSchema = z.object({
 type ContactDetailsFormValues = z.infer<typeof contactDetailsSchema>;
 
 const ContactDetails = () => {
-  const { formData, updateFormData, isLoading } = useFormContext();
-  const navigate = useNavigate();
+  const { formData, updateFormData, isLoading, backForm } = useFormContext();
 
   const form = useForm<ContactDetailsFormValues>({
     resolver: zodResolver(contactDetailsSchema),
@@ -41,7 +39,7 @@ const ContactDetails = () => {
   });
 
   const onSubmit = async (data: ContactDetailsFormValues) => {
-    await updateFormData("contact-details", data);
+    await updateFormData(data);
   };
 
   return (
@@ -86,11 +84,7 @@ const ContactDetails = () => {
           />
 
           <div className="flex justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate("/personal-info")}
-            >
+            <Button type="button" variant="outline" onClick={backForm}>
               Back
             </Button>
             <Button type="submit" disabled={isLoading}>

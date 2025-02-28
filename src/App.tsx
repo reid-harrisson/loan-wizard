@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { FormProvider } from "./context/FormContext";
 import Layout from "./components/Layout";
@@ -14,7 +14,6 @@ function App() {
     <FormProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to="/personal-info" replace />} />
           <Route path="personal-info" element={<PersonalInfo />} />
           <Route path="contact-details" element={<ContactDetails />} />
           <Route path="loan-request" element={<LoanRequest />} />

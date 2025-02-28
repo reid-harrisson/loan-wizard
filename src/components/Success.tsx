@@ -5,13 +5,10 @@ import { useFormContext } from "../context/FormContext";
 
 const Success = () => {
   const navigate = useNavigate();
-  const { formData } = useFormContext();
+  const { formData, initializeForm } = useFormContext();
 
   const handleStartNew = () => {
-    // Clear localStorage
-    localStorage.removeItem("loanWizardData");
-    // Reload the page to start fresh
-    window.location.href = "/";
+    initializeForm();
   };
 
   return (

@@ -4,12 +4,17 @@ import {
   useState,
   useEffect,
   type ReactNode,
+  useMemo,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { getPathByStep } from "@/lib/utils";
 
 // Define the form data structure
 export interface FormData {
+  // Step
+  step: number;
+
   // Personal Info
   firstName: string;
   lastName: string;
@@ -42,6 +47,7 @@ export interface FormData {
 
 // Initial form data
 const initialFormData: FormData = {
+  step: 1,
   firstName: "",
   lastName: "",
   dateOfBirth: "",
@@ -60,20 +66,18 @@ const initialFormData: FormData = {
   confirmed: false,
 };
 
-// Define the context type
 interface FormContextType {
   formData: FormData;
-  updateFormData: (step: string, data: Partial<FormData>) => Promise<void>;
+  updateFormData: (data: Partial<FormData>) => Promise<void>;
   currentStep: number;
-  setCurrentStep: (step: number) => void;
   isLoading: boolean;
   getAge: (dateOfBirth: string) => number;
+  initializeForm: () => void;
+  backForm: () => void;
 }
 
-// Create context
 const FormContext = createContext<FormContextType | undefined>(undefined);
 
-// Provider component
 export const FormProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<FormData>(() => {
     // Try to load from localStorage on initial render
@@ -81,7 +85,8 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     return savedData ? JSON.parse(savedData) : initialFormData;
   });
 
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const currentStep = useMemo(() => formData.step, [formData.step]);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -104,14 +109,11 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Update form data and submit to API
-  const updateFormData = async (
-    step: string,
-    data: Partial<FormData>
-  ): Promise<void> => {
+  const updateFormData = async (data: Partial<FormData>): Promise<void> => {
     setIsLoading(true);
     const baseUrl = import.meta.env.VITE_BACKEND_URL;
     try {
-      const updatedData = { ...formData, ...data };
+      const updatedData = { ...formData, ...data, step: currentStep + 1 };
 
       // If we have a UUID, update the entity, otherwise create a new one
       if (formData.uuid) {
@@ -152,18 +154,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
         variant: "default",
       });
 
-      // Navigate to the next step based on the current step
-      const nextRoutes: Record<string, string> = {
-        "personal-info": "/contact-details",
-        "contact-details": "/loan-request",
-        "loan-request": "/financial-info",
-        "financial-info": "/finalization",
-        finalization: "/success",
-      };
-
-      if (nextRoutes[step]) {
-        navigate(nextRoutes[step]);
-      }
+      navigate(getPathByStep(currentStep));
     } catch (error) {
       console.error("Error saving data:", error);
       toast({
@@ -176,15 +167,25 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const backForm = () => {
+    setFormData({ ...formData, step: currentStep - 1 });
+  };
+
+  const initializeForm = () => {
+    setFormData(initialFormData);
+    navigate(getPathByStep(1));
+  };
+
   return (
     <FormContext.Provider
       value={{
         formData,
         updateFormData,
         currentStep,
-        setCurrentStep,
         isLoading,
+        initializeForm,
         getAge,
+        backForm,
       }}
     >
       {children}

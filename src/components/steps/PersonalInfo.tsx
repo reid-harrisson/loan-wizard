@@ -18,7 +18,8 @@ const personalInfoSchema = z.object({
   firstName: z
     .string()
     .min(1, "First name is required")
-    .regex(/^[a-zA-ZäöüÄÖÜß]+$/, "Only Latin and German letters are allowed"),
+    .regex(/^[a-zA-ZäöüÄÖÜß\s]+$/, "Only Latin and German letters are allowed")
+    .refine((data) => data.split(" ").length === 1, "Only single name allowed"),
   lastName: z
     .string()
     .min(1, "Last name is required")
@@ -27,6 +28,10 @@ const personalInfoSchema = z.object({
     .string()
     .min(1, "Date of birth is required")
     .refine((date) => {
+      const regex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!regex.test(date)) {
+        return false;
+      }
       const today = new Date();
       const birthDate = new Date(date);
       let age = today.getFullYear() - birthDate.getFullYear();
@@ -35,7 +40,7 @@ const personalInfoSchema = z.object({
         age--;
       }
       return age <= 79;
-    }, "Maximum age is 79 years old"),
+    }, "Invalid date format or maximum age is 79 years old"),
 });
 
 type PersonalInfoFormValues = z.infer<typeof personalInfoSchema>;
@@ -53,7 +58,7 @@ const PersonalInfo = () => {
   });
 
   const onSubmit = async (data: PersonalInfoFormValues) => {
-    await updateFormData("personal-info", data);
+    await updateFormData(data);
   };
 
   return (

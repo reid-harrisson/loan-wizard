@@ -1,26 +1,16 @@
-import { Outlet } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import { useFormContext } from "../context/FormContext";
+import { Outlet, useNavigate } from "react-router-dom";
 import StepIndicator from "./StepIndicator";
-
+import { useFormContext } from "../context/FormContext";
+import { getPathByStep } from "../lib/utils";
+import { useEffect } from "react";
 const Layout = () => {
-  const location = useLocation();
   const { currentStep } = useFormContext();
 
-  // Map routes to step numbers
-  const getStepFromPath = (path: string): number => {
-    const routes: Record<string, number> = {
-      "/personal-info": 1,
-      "/contact-details": 2,
-      "/loan-request": 3,
-      "/financial-info": 4,
-      "/finalization": 5,
-      "/success": 6,
-    };
-    return routes[path] || 1;
-  };
+  const navigate = useNavigate();
 
-  const currentStepNumber = getStepFromPath(location.pathname);
+  useEffect(() => {
+    navigate(getPathByStep(currentStep));
+  }, [currentStep]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
@@ -29,9 +19,7 @@ const Layout = () => {
           Loan Application
         </h1>
 
-        {location.pathname !== "/success" && (
-          <StepIndicator currentStep={currentStepNumber} />
-        )}
+        {currentStep !== 6 && <StepIndicator currentStep={currentStep} />}
 
         <div className="mt-8">
           <Outlet />

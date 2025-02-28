@@ -12,7 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 
@@ -25,8 +24,8 @@ const FinalizationSchema = z.object({
 type FinalizationFormValues = z.infer<typeof FinalizationSchema>;
 
 const Finalization = () => {
-  const { formData, updateFormData, isLoading, getAge } = useFormContext();
-  const navigate = useNavigate();
+  const { formData, updateFormData, isLoading, getAge, backForm } =
+    useFormContext();
 
   const form = useForm<FinalizationFormValues>({
     resolver: zodResolver(FinalizationSchema),
@@ -36,7 +35,7 @@ const Finalization = () => {
   });
 
   const onSubmit = async (data: FinalizationFormValues) => {
-    await updateFormData("finalization", data);
+    await updateFormData(data);
   };
 
   // Format date for display
@@ -207,11 +206,7 @@ const Finalization = () => {
           <FormMessage />
 
           <div className="flex justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate("/financial-info")}
-            >
+            <Button type="button" variant="outline" onClick={backForm}>
               Back
             </Button>
             <Button type="submit" disabled={isLoading}>

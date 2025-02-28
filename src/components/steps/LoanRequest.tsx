@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Slider } from "@/components/ui/slider";
-import { useNavigate } from "react-router-dom";
 
 const LoanRequestSchema = z
   .object({
@@ -35,8 +34,8 @@ const LoanRequestSchema = z
 type LoanRequestFormValues = z.infer<typeof LoanRequestSchema>;
 
 const LoanRequest = () => {
-  const { formData, updateFormData, isLoading, getAge } = useFormContext();
-  const navigate = useNavigate();
+  const { formData, updateFormData, isLoading, getAge, backForm } =
+    useFormContext();
 
   const form = useForm<LoanRequestFormValues>({
     resolver: zodResolver(LoanRequestSchema),
@@ -65,7 +64,7 @@ const LoanRequest = () => {
       return;
     }
 
-    await updateFormData("loan-request", data);
+    await updateFormData(data);
   };
 
   return (
@@ -157,11 +156,7 @@ const LoanRequest = () => {
           />
 
           <div className="flex justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate("/contact-details")}
-            >
+            <Button type="button" variant="outline" onClick={backForm}>
               Back
             </Button>
             <Button type="submit" disabled={isLoading}>

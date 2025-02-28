@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
 const FinancialInfoSchema = z.object({
@@ -29,8 +28,8 @@ const FinancialInfoSchema = z.object({
 type FinancialInfoFormValues = z.infer<typeof FinancialInfoSchema>;
 
 const FinancialInfo = () => {
-  const { formData, updateFormData, isLoading } = useFormContext();
-  const navigate = useNavigate();
+  const { formData, updateFormData, isLoading, initializeForm, backForm } =
+    useFormContext();
   const { toast } = useToast();
 
   const form = useForm<FinancialInfoFormValues>({
@@ -68,10 +67,8 @@ const FinancialInfo = () => {
           "Your financial capacity may not be sufficient for this loan. Consider reducing the loan amount or starting with a new application.",
         variant: "destructive",
       });
-      // We'll still allow them to proceed, but with a warning
-      // You could also redirect them back to step 3 or step 1 here
     } else {
-      await updateFormData("financial-info", data);
+      await updateFormData(data);
     }
   };
 
@@ -225,18 +222,16 @@ const FinancialInfo = () => {
           )}
 
           <div className="flex justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate("/loan-request")}
-            >
+            <Button type="button" variant="outline" onClick={backForm}>
               Back
             </Button>
             <div className="space-x-2">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => navigate("/personal-info")}
+                onClick={() => {
+                  initializeForm();
+                }}
               >
                 Restart
               </Button>
