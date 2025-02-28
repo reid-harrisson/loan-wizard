@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import PersonalInfo from "./components/steps/PersonalInfo";
 import ContactDetails from "./components/steps/ContactDetails";
 import LoanRequest from "./components/steps/LoanRequest";
+import FinancialInfo from "./components/steps/FinancialInfo";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
           <Route path="personal-info" element={<PersonalInfo />} />
           <Route path="contact-details" element={<ContactDetails />} />
           <Route path="loan-request" element={<LoanRequest />} />
-          <Route path="financial-info" element={<></>} />
+          <Route path="financial-info" element={<FinancialInfo />} />
           <Route path="finalization" element={<></>} />
           <Route path="success" element={<></>} />
         </Route>
