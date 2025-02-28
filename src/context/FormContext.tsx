@@ -109,21 +109,19 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     data: Partial<FormData>
   ): Promise<void> => {
     setIsLoading(true);
+    const baseUrl = import.meta.env.VITE_BACKEND_URL;
     try {
       const updatedData = { ...formData, ...data };
 
       // If we have a UUID, update the entity, otherwise create a new one
       if (formData.uuid) {
-        const response = await fetch(
-          `http://localhost:4000/entities/${formData.uuid}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedData),
-          }
-        );
+        const response = await fetch(`${baseUrl}/entities/${formData.uuid}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData),
+        });
 
         if (!response.ok) {
           throw new Error("Failed to update data");
@@ -132,7 +130,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
         const result = await response.json();
         setFormData(result.entity);
       } else {
-        const response = await fetch("http://localhost:4000/entities", {
+        const response = await fetch(`${baseUrl}/entities`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
