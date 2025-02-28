@@ -1,9 +1,11 @@
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { useFormContext } from "../context/FormContext";
 import StepIndicator from "./StepIndicator";
 
 const Layout = () => {
   const location = useLocation();
+  const { currentStep } = useFormContext();
 
   // Map routes to step numbers
   const getStepFromPath = (path: string): number => {

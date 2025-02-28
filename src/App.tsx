@@ -7,6 +7,7 @@ import ContactDetails from "./components/steps/ContactDetails";
 import LoanRequest from "./components/steps/LoanRequest";
 import FinancialInfo from "./components/steps/FinancialInfo";
 import Finalization from "./components/steps/Finalization";
+import Success from "./components/Success";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           <Route path="loan-request" element={<LoanRequest />} />
           <Route path="financial-info" element={<FinancialInfo />} />
           <Route path="finalization" element={<Finalization />} />
-          <Route path="success" element={<></>} />
+          <Route path="success" element={<Success />} />
         </Route>
       </Routes>
       <Toaster />
