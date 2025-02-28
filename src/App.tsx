@@ -1,10 +1,11 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
+import { FormProvider } from "./context/FormContext";
 import Layout from "./components/Layout";
 
 function App() {
   return (
-    <>
+    <FormProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/personal-info" replace />} />
@@ -17,7 +18,7 @@ function App() {
         </Route>
       </Routes>
       <Toaster />
-    </>
+    </FormProvider>
   );
 }
 
