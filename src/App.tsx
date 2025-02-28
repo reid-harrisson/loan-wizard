@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { FormProvider } from "./context/FormContext";
 import Layout from "./components/Layout";
+import PersonalInfo from "./components/steps/PersonalInfo";
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/personal-info" replace />} />
-          <Route path="personal-info" element={<></>} />
+          <Route path="personal-info" element={<PersonalInfo />} />
           <Route path="contact-details" element={<></>} />
           <Route path="loan-request" element={<></>} />
           <Route path="financial-info" element={<></>} />
